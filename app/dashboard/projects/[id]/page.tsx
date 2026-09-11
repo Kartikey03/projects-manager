@@ -40,7 +40,7 @@ export default async function ProjectDetailPage({
           <div className="mb-2">
             <StatusChanger projectId={project.id} status={project.status} />
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight">{project.title}</h1>
+          <h1 className="break-words text-2xl font-semibold tracking-tight sm:text-3xl">{project.title}</h1>
         </div>
         <div className="flex items-center gap-2">
           <ProjectEditor
@@ -148,7 +148,7 @@ export default async function ProjectDetailPage({
                   <input type="hidden" name="project_id" value={project.id} />
                   <ConfirmSubmit
                     message="Delete this payment?"
-                    className="rounded-full p-2 text-tertiary transition hover:bg-[var(--border)] hover:text-[var(--red)]"
+                    className="pressable rounded-full p-2 text-tertiary hover:bg-[var(--border)] hover:text-[var(--red)]"
                   >
                     <Trash2 size={15} />
                   </ConfirmSubmit>

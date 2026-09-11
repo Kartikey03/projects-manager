@@ -12,9 +12,9 @@ export type TriggerSpec = {
 const ICONS = { plus: Plus, pencil: Pencil, trash: Trash2, wallet: Wallet };
 
 const VARIANT_CLASS: Record<NonNullable<TriggerSpec["variant"]>, string> = {
-  primary: "btn-primary flex items-center gap-2 px-5 py-2.5 text-sm",
-  ghost: "btn-ghost flex items-center gap-2 px-4 py-2.5 text-sm",
-  icon: "rounded-full p-1.5 text-tertiary transition hover:bg-[var(--border)] hover:text-[var(--text)]",
+  primary: "btn-primary flex shrink-0 items-center justify-center gap-2 whitespace-nowrap px-5 py-2.5 text-sm",
+  ghost: "btn-ghost flex shrink-0 items-center justify-center gap-2 whitespace-nowrap px-4 py-2.5 text-sm",
+  icon: "pressable rounded-full p-2 text-tertiary hover:bg-[var(--border)] hover:text-[var(--text)]",
 };
 
 /** Renders a modal trigger button from a serializable spec. Safe to call inside client components. */

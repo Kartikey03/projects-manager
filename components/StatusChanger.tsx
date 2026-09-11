@@ -41,7 +41,7 @@ export function StatusChanger({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition"
+        className="pressable inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium"
         style={{ background: meta.bg, color: meta.color }}
       >
         <span className="h-1.5 w-1.5 rounded-full" style={{ background: meta.dot }} />

@@ -76,7 +76,7 @@ export default async function PaymentsPage() {
                         <div className="min-w-0">
                           <Link
                             href={`/dashboard/projects/${p.project_id}`}
-                            className="truncate text-sm font-medium transition hover:text-[var(--accent)]"
+                            className="block truncate text-sm font-medium transition hover:text-[var(--accent)] active:opacity-70"
                           >
                             {p.project_title}
                           </Link>
@@ -87,8 +87,8 @@ export default async function PaymentsPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold" style={{ color: "var(--green)" }}>
+                      <div className="flex shrink-0 items-center gap-2 pl-2">
+                        <span className="whitespace-nowrap text-sm font-semibold" style={{ color: "var(--green)" }}>
                           +{formatMoney(p.amount)}
                         </span>
                         <form action={deletePayment}>
@@ -96,7 +96,7 @@ export default async function PaymentsPage() {
                           <input type="hidden" name="project_id" value={p.project_id} />
                           <ConfirmSubmit
                             message="Delete this payment?"
-                            className="rounded-full p-1.5 text-tertiary transition hover:bg-[var(--border)] hover:text-[var(--red)]"
+                            className="pressable rounded-full p-2 text-tertiary hover:bg-[var(--border)] hover:text-[var(--red)]"
                           >
                             <Trash2 size={14} />
                           </ConfirmSubmit>

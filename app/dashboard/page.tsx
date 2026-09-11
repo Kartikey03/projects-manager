@@ -29,7 +29,7 @@ export default async function OverviewPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex items-end justify-between gap-4">
+      <div className="mb-8 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Overview</h1>
           <p className="mt-1 text-secondary">Here&apos;s where your money and work stand.</p>
@@ -66,7 +66,7 @@ export default async function OverviewPage() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-5">
         {/* Needs attention */}
-        <section className="card p-6 lg:col-span-3">
+        <section className="card min-w-0 p-5 sm:p-6 lg:col-span-3">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-semibold">Awaiting payment</h2>
             <Link
@@ -87,22 +87,22 @@ export default async function OverviewPage() {
                   <Link
                     key={p.id}
                     href={`/dashboard/projects/${p.id}`}
-                    className="block rounded-2xl border p-4 transition hover:shadow-[var(--shadow-md)]"
+                    className="pressable block rounded-2xl border p-4 hover:shadow-[var(--shadow-md)] active:bg-[var(--border)]"
                     style={{ borderColor: "var(--border)" }}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="truncate font-medium">{p.title}</div>
-                        <div className="mt-0.5 text-xs text-secondary">
+                        <div className="mt-0.5 truncate text-xs text-secondary">
                           {p.manager ? `via ${p.manager.name}` : "No source"}
                           {p.client_name ? ` · ${p.client_name}` : ""}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-semibold" style={{ color: "var(--amber)" }}>
+                      <div className="shrink-0 text-right">
+                        <div className="whitespace-nowrap font-semibold" style={{ color: "var(--amber)" }}>
                           {formatMoney(p.balance, p.currency)}
                         </div>
-                        <div className="text-xs text-tertiary">of {formatMoney(p.booked_amount, p.currency)}</div>
+                        <div className="whitespace-nowrap text-xs text-tertiary">of {formatMoney(p.booked_amount, p.currency)}</div>
                       </div>
                     </div>
                     <div className="mt-3">
@@ -116,7 +116,7 @@ export default async function OverviewPage() {
         </section>
 
         {/* Recent payments */}
-        <section className="card p-6 lg:col-span-2">
+        <section className="card min-w-0 p-5 sm:p-6 lg:col-span-2">
           <h2 className="mb-4 font-semibold">Recent payments</h2>
           {recentPayments.length === 0 ? (
             <Empty text="No payments recorded yet." />
@@ -139,7 +139,7 @@ export default async function OverviewPage() {
                       <div className="text-xs text-tertiary">{formatDate(p.paid_on)}</div>
                     </div>
                   </div>
-                  <div className="text-sm font-semibold" style={{ color: "var(--green)" }}>
+                  <div className="shrink-0 whitespace-nowrap pl-2 text-sm font-semibold" style={{ color: "var(--green)" }}>
                     +{formatMoney(p.amount)}
                   </div>
                 </div>

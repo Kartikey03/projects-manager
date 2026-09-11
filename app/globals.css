@@ -70,6 +70,25 @@ body {
     "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: -0.011em;
   min-height: 100vh;
+  /* never let a stray wide child cause sideways scrolling on phones */
+  overflow-x: hidden;
+}
+
+/* Every tappable thing: kill the grey mobile tap flash (we supply our own
+   feedback), remove the 300ms delay, and keep touch scrolling smooth. */
+button,
+a,
+[role="button"],
+label,
+select,
+summary {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+button:not(:disabled),
+a,
+[role="button"] {
+  cursor: pointer;
 }
 
 /* ===== Reusable primitives ===== */
@@ -91,26 +110,50 @@ body {
   color: #fff;
   border-radius: 980px;
   font-weight: 500;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  min-height: 44px;
+  transition: transform 0.12s ease, background 0.15s ease, box-shadow 0.15s ease,
+    filter 0.12s ease;
 }
-.btn-primary:hover {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+@media (hover: hover) {
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
 }
 .btn-primary:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.96);
+  filter: brightness(0.92);
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-ghost {
   border: 1px solid var(--border-strong);
   border-radius: 980px;
   color: var(--text);
-  transition: background 0.15s ease, transform 0.15s ease;
+  min-height: 44px;
+  transition: background 0.15s ease, transform 0.12s ease;
 }
-.btn-ghost:hover {
-  background: var(--border);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .btn-ghost:hover {
+    background: var(--border);
+    transform: translateY(-1px);
+  }
+}
+.btn-ghost:active {
+  transform: scale(0.96);
+  background: var(--border-strong);
+}
+
+/* Press feedback for any tappable surface (cards, list rows, icon buttons) */
+.pressable {
+  transition: transform 0.12s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.pressable:active {
+  transform: scale(0.98);
 }
 
 .input {
@@ -124,6 +167,12 @@ body {
 .input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+/* 16px prevents iOS Safari from zooming the page when a field is focused */
+@media (max-width: 640px) {
+  .input {
+    font-size: 16px !important;
+  }
 }
 
 .text-secondary {

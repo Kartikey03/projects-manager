@@ -43,21 +43,21 @@ export function Modal({
               exit={{ opacity: 0 }}
             />
             <motion.div
-              className="card relative z-10 max-h-[92vh] w-full overflow-y-auto p-6 sm:max-w-lg"
-              style={{ boxShadow: "var(--shadow-lg)", borderRadius: "22px" }}
-              initial={{ opacity: 0, y: 40, scale: 0.97 }}
+              className="card relative z-10 max-h-[92vh] w-full overflow-y-auto rounded-b-none rounded-t-[22px] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:max-w-lg sm:rounded-[22px] sm:p-6 sm:pb-6"
+              style={{ boxShadow: "var(--shadow-lg)" }}
+              initial={{ opacity: 0, y: 40, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 40, scale: 0.97 }}
+              exit={{ opacity: 0, y: 40, scale: 0.98 }}
               transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="mb-5 flex items-center justify-between">
                 <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
                 <button
                   onClick={close}
-                  className="rounded-full p-1.5 text-secondary transition hover:bg-[var(--border)]"
+                  className="pressable -mr-1 rounded-full p-2 text-secondary hover:bg-[var(--border)]"
                   aria-label="Close"
                 >
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
               <ModalCtx.Provider value={{ close }}>

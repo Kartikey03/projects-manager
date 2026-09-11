@@ -47,7 +47,7 @@ export function ProjectsBoard({
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="mb-6 flex items-end justify-between gap-4">
+      <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Projects</h1>
           <p className="mt-1 text-secondary">{projects.length} in total</p>
@@ -103,6 +103,7 @@ export function ProjectsBoard({
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
+                  whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                   className="card group relative flex flex-col p-5"
                 >
@@ -115,7 +116,7 @@ export function ProjectsBoard({
                         icon: "pencil",
                         ariaLabel: "Edit",
                         className:
-                          "rounded-full p-1.5 text-tertiary opacity-0 transition hover:bg-[var(--border)] hover:text-[var(--text)] group-hover:opacity-100",
+                          "pressable rounded-full p-2 text-tertiary hover:bg-[var(--border)] hover:text-[var(--text)] md:opacity-0 md:transition md:group-hover:opacity-100",
                       }}
                     />
                   </div>

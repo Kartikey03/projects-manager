@@ -23,7 +23,7 @@ export default async function PeoplePage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <div className="mb-6 flex items-end justify-between gap-4">
+      <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">People</h1>
           <p className="mt-1 text-secondary">The folks who bring you work.</p>
@@ -57,13 +57,13 @@ export default async function PeoplePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex gap-1 opacity-0 transition group-hover:opacity-100">
+                  <div className="flex gap-1 md:opacity-0 md:transition md:group-hover:opacity-100">
                     <ManagerEditor manager={m} trigger={{ icon: "pencil", variant: "icon" }} />
                     <form action={deleteManager}>
                       <input type="hidden" name="id" value={m.id} />
                       <ConfirmSubmit
                         message={`Remove ${m.name}? Their projects will stay but lose the source link.`}
-                        className="rounded-full p-1.5 text-tertiary transition hover:bg-[var(--border)] hover:text-[var(--red)]"
+                        className="pressable rounded-full p-2 text-tertiary hover:bg-[var(--border)] hover:text-[var(--red)]"
                       >
                         <Trash2 size={14} />
                       </ConfirmSubmit>
