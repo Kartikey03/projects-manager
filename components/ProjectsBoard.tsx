@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus, Search, Pencil } from "lucide-react";
+import { Search } from "lucide-react";
 import { ProjectEditor } from "@/components/ProjectEditor";
 import { StatusBadge, ProgressBar } from "@/components/StatusBadge";
 import { formatMoney, relativeDeadline } from "@/lib/format";
@@ -54,11 +54,7 @@ export function ProjectsBoard({
         </div>
         <ProjectEditor
           managers={managers}
-          trigger={(open) => (
-            <button onClick={open} className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm">
-              <Plus size={17} /> New project
-            </button>
-          )}
+          trigger={{ label: "New project", icon: "plus", variant: "primary" }}
         />
       </div>
 
@@ -115,15 +111,12 @@ export function ProjectsBoard({
                     <ProjectEditor
                       managers={managers}
                       project={p}
-                      trigger={(open) => (
-                        <button
-                          onClick={open}
-                          className="rounded-full p-1.5 text-tertiary opacity-0 transition hover:bg-[var(--border)] hover:text-[var(--text)] group-hover:opacity-100"
-                          aria-label="Edit"
-                        >
-                          <Pencil size={15} />
-                        </button>
-                      )}
+                      trigger={{
+                        icon: "pencil",
+                        ariaLabel: "Edit",
+                        className:
+                          "rounded-full p-1.5 text-tertiary opacity-0 transition hover:bg-[var(--border)] hover:text-[var(--text)] group-hover:opacity-100",
+                      }}
                     />
                   </div>
 

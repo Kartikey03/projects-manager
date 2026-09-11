@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus, ArrowUpRight, Wallet } from "lucide-react";
+import { ArrowUpRight, Wallet } from "lucide-react";
 import { getProjectsWithStats, getRecentPayments } from "@/lib/queries";
 import { getManagers } from "@/lib/queries";
 import { StatCard } from "@/components/StatCard";
@@ -36,11 +36,7 @@ export default async function OverviewPage() {
         </div>
         <ProjectEditor
           managers={managers}
-          trigger={(open) => (
-            <button onClick={open} className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm">
-              <Plus size={17} /> New project
-            </button>
-          )}
+          trigger={{ label: "New project", icon: "plus", variant: "primary" }}
         />
       </div>
 

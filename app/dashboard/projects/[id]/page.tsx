@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Plus, Trash2, Pencil, Calendar, User, Briefcase } from "lucide-react";
+import { ArrowLeft, Trash2, Calendar, User, Briefcase } from "lucide-react";
 import { getManagers, getProjectDetail } from "@/lib/queries";
 import { deletePayment, deleteProject } from "@/app/dashboard/actions";
 import { ProgressBar } from "@/components/StatusBadge";
@@ -46,11 +46,7 @@ export default async function ProjectDetailPage({
           <ProjectEditor
             managers={managers}
             project={project}
-            trigger={(open) => (
-              <button onClick={open} className="btn-ghost flex items-center gap-2 px-4 py-2.5 text-sm">
-                <Pencil size={15} /> Edit
-              </button>
-            )}
+            trigger={{ label: "Edit", icon: "pencil", variant: "ghost" }}
           />
           <form action={deleteProject}>
             <input type="hidden" name="id" value={project.id} />
@@ -121,11 +117,11 @@ export default async function ProjectDetailPage({
             projectId={project.id}
             currency={project.currency}
             suggested={project.balance > 0 ? project.balance : undefined}
-            trigger={(open) => (
-              <button onClick={open} className="btn-primary flex items-center gap-2 px-4 py-2 text-sm">
-                <Plus size={16} /> Record payment
-              </button>
-            )}
+            trigger={{
+              label: "Record payment",
+              icon: "plus",
+              className: "btn-primary flex items-center gap-2 px-4 py-2 text-sm",
+            }}
           />
         </div>
 

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import { Modal } from "@/components/Modal";
+import { renderTrigger, type TriggerSpec } from "@/components/triggerButton";
 import { addPayment } from "@/app/dashboard/actions";
 
 const METHODS = ["UPI", "Bank transfer", "Cash", "PayPal", "Wise", "Card", "Other"];
@@ -17,14 +18,14 @@ export function PaymentEditor({
   projectId: string;
   currency?: string;
   suggested?: number;
-  trigger: (open: () => void) => React.ReactNode;
+  trigger: TriggerSpec;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <Modal trigger={trigger} title="Record a payment">
+    <Modal trigger={(open) => renderTrigger(trigger, open)} title="Record a payment">
       {(close) => (
         <form
           action={(fd) =>

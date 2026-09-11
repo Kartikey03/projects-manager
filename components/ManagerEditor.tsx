@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import { Modal } from "@/components/Modal";
+import { renderTrigger, type TriggerSpec } from "@/components/triggerButton";
 import { saveManager } from "@/app/dashboard/actions";
 import type { Manager } from "@/lib/types";
 
@@ -12,13 +13,16 @@ export function ManagerEditor({
   trigger,
 }: {
   manager?: Manager;
-  trigger: (open: () => void) => React.ReactNode;
+  trigger: TriggerSpec;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
 
   return (
-    <Modal trigger={trigger} title={manager ? "Edit person" : "Add a person"}>
+    <Modal
+      trigger={(open) => renderTrigger(trigger, open)}
+      title={manager ? "Edit person" : "Add a person"}
+    >
       {(close) => (
         <form
           action={(fd) =>

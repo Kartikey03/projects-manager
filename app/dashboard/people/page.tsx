@@ -1,4 +1,4 @@
-import { Plus, Pencil, Trash2, Phone, Mail, FolderKanban } from "lucide-react";
+import { Trash2, Phone, Mail } from "lucide-react";
 import { getManagers, getProjectsWithStats } from "@/lib/queries";
 import { deleteManager } from "@/app/dashboard/actions";
 import { ManagerEditor } from "@/components/ManagerEditor";
@@ -28,25 +28,13 @@ export default async function PeoplePage() {
           <h1 className="text-3xl font-semibold tracking-tight">People</h1>
           <p className="mt-1 text-secondary">The folks who bring you work.</p>
         </div>
-        <ManagerEditor
-          trigger={(open) => (
-            <button onClick={open} className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm">
-              <Plus size={17} /> Add person
-            </button>
-          )}
-        />
+        <ManagerEditor trigger={{ label: "Add person", icon: "plus", variant: "primary" }} />
       </div>
 
       {managers.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed py-20 text-center" style={{ borderColor: "var(--border-strong)" }}>
           <p className="mb-4 text-secondary">No one added yet. Add the people who send you projects.</p>
-          <ManagerEditor
-            trigger={(open) => (
-              <button onClick={open} className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm">
-                <Plus size={17} /> Add your first
-              </button>
-            )}
-          />
+          <ManagerEditor trigger={{ label: "Add your first", icon: "plus", variant: "primary" }} />
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -70,14 +58,7 @@ export default async function PeoplePage() {
                     </div>
                   </div>
                   <div className="flex gap-1 opacity-0 transition group-hover:opacity-100">
-                    <ManagerEditor
-                      manager={m}
-                      trigger={(open) => (
-                        <button onClick={open} className="rounded-full p-1.5 text-tertiary transition hover:bg-[var(--border)] hover:text-[var(--text)]">
-                          <Pencil size={14} />
-                        </button>
-                      )}
-                    />
+                    <ManagerEditor manager={m} trigger={{ icon: "pencil", variant: "icon" }} />
                     <form action={deleteManager}>
                       <input type="hidden" name="id" value={m.id} />
                       <ConfirmSubmit

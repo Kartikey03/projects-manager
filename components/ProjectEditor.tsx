@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import { Modal } from "@/components/Modal";
+import { renderTrigger, type TriggerSpec } from "@/components/triggerButton";
 import { saveProject } from "@/app/dashboard/actions";
 import { STATUS_ORDER, STATUS_META, type Manager, type Project } from "@/lib/types";
 
@@ -16,13 +17,16 @@ export function ProjectEditor({
 }: {
   managers: Manager[];
   project?: Project;
-  trigger: (open: () => void) => React.ReactNode;
+  trigger: TriggerSpec;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
 
   return (
-    <Modal trigger={trigger} title={project ? "Edit project" : "New project"}>
+    <Modal
+      trigger={(open) => renderTrigger(trigger, open)}
+      title={project ? "Edit project" : "New project"}
+    >
       {(close) => (
         <form
           action={(fd) =>
