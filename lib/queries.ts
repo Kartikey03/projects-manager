@@ -78,7 +78,7 @@ export async function getProjectDetail(id: string): Promise<{
 }
 
 export async function getRecentPayments(limit = 12): Promise<
-  (Payment & { project_title: string })[]
+  (Payment & { project_title: string; currency: string })[]
 > {
   const supabase = await createClient();
   const [{ data: payments }, { data: projects }] = await Promise.all([
@@ -87,12 +87,21 @@ export async function getRecentPayments(limit = 12): Promise<
       .select("*")
       .order("paid_on", { ascending: false })
       .limit(limit),
-    supabase.from("projects").select("id,title"),
+    supabase.from("projects").select("id,title,currency"),
   ]);
-  const titleMap = new Map((projects ?? []).map((p) => [p.id, p.title as string]));
-  return ((payments ?? []) as Payment[]).map((p) => ({
-    ...p,
-    amount: Number(p.amount),
-    project_title: titleMap.get(p.project_id) ?? "Unknown project",
-  }));
+  const projMap = new Map(
+    (projects ?? []).map((p) => [
+      p.id,
+      { title: p.title as string, currency: (p.currency as string) ?? "INR" },
+    ])
+  );
+  return ((payments ?? []) as Payment[]).map((p) => {
+    const info = projMap.get(p.project_id);
+    return {
+      ...p,
+      amount: Number(p.amount),
+      project_title: info?.title ?? "Unknown project",
+      currency: info?.currency ?? "INR",
+    };
+  });
 }

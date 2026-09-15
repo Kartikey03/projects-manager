@@ -5,7 +5,9 @@ import { getManagers } from "@/lib/queries";
 import { StatCard } from "@/components/StatCard";
 import { StatusBadge, ProgressBar } from "@/components/StatusBadge";
 import { ProjectEditor } from "@/components/ProjectEditor";
-import { formatMoney, formatDate } from "@/lib/format";
+import { formatMoney, formatDate, sumByCurrency } from "@/lib/format";
+
+const zeroINR = [{ currency: "INR", value: 0 }];
 
 export default async function OverviewPage() {
   const [projects, managers, recentPayments] = await Promise.all([
@@ -15,9 +17,13 @@ export default async function OverviewPage() {
   ]);
 
   const live = projects.filter((p) => p.status !== "cancelled");
-  const totalBooked = live.reduce((s, p) => s + p.booked_amount, 0);
-  const totalReceived = live.reduce((s, p) => s + p.paid, 0);
-  const outstanding = live.reduce((s, p) => s + Math.max(0, p.balance), 0);
+  const bookedByCurrency = sumByCurrency(live, (p) => p.booked_amount, (p) => p.currency);
+  const receivedByCurrency = sumByCurrency(live, (p) => p.paid, (p) => p.currency);
+  const outstandingByCurrency = sumByCurrency(
+    live,
+    (p) => Math.max(0, p.balance),
+    (p) => p.currency
+  );
   const active = projects.filter(
     (p) => p.status === "in_progress" || p.status === "review"
   ).length;
@@ -41,18 +47,20 @@ export default async function OverviewPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Total booked" value={totalBooked} prefix="₹" index={0} />
+        <StatCard
+          label="Total booked"
+          money={bookedByCurrency.length ? bookedByCurrency : zeroINR}
+          index={0}
+        />
         <StatCard
           label="Received"
-          value={totalReceived}
-          prefix="₹"
+          money={receivedByCurrency.length ? receivedByCurrency : zeroINR}
           tone="var(--green)"
           index={1}
         />
         <StatCard
           label="Outstanding"
-          value={outstanding}
-          prefix="₹"
+          money={outstandingByCurrency.length ? outstandingByCurrency : zeroINR}
           tone="var(--amber)"
           index={2}
         />
@@ -140,7 +148,7 @@ export default async function OverviewPage() {
                     </div>
                   </div>
                   <div className="shrink-0 whitespace-nowrap pl-2 text-sm font-semibold" style={{ color: "var(--green)" }}>
-                    +{formatMoney(p.amount)}
+                    +{formatMoney(p.amount, p.currency)}
                   </div>
                 </div>
               ))}

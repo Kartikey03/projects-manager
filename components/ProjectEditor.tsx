@@ -8,7 +8,13 @@ import { renderTrigger, type TriggerSpec } from "@/components/triggerButton";
 import { saveProject } from "@/app/dashboard/actions";
 import { STATUS_ORDER, STATUS_META, type Manager, type Project } from "@/lib/types";
 
-const CURRENCIES = ["INR", "USD", "EUR", "GBP", "AED"];
+const CURRENCIES = [
+  { code: "INR", label: "₹ INR" },
+  { code: "USD", label: "$ USD" },
+  { code: "GBP", label: "£ GBP" },
+  { code: "EUR", label: "€ EUR" },
+  { code: "AED", label: "د.إ AED" },
+];
 
 export function ProjectEditor({
   managers,
@@ -108,8 +114,8 @@ export function ProjectEditor({
                 className="input w-full px-3 py-2.5 text-sm"
               >
                 {CURRENCIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
+                  <option key={c.code} value={c.code}>
+                    {c.label}
                   </option>
                 ))}
               </select>
