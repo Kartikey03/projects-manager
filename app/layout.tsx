@@ -5,7 +5,7 @@ const description = "Track freelance projects, referral sources and irregular pa
 
 export const metadata: Metadata = {
   // absolute base so the social preview image resolves when the link is shared
-  metadataBase: new URL("https://theog-projects-manager.vercel.app"),
+  metadataBase: new URL("https://ordo-work.vercel.app"),
   title: { default: "Ordo", template: "%s · Ordo" },
   description,
   applicationName: "Ordo",
