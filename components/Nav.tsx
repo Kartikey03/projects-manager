@@ -48,6 +48,7 @@ export function TopNav({ email }: { email: string }) {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch
                 aria-current={active ? "page" : undefined}
                 className="pressable rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors"
                 style={{
@@ -98,6 +99,7 @@ export function TabBar() {
           <Link
             key={item.href}
             href={item.href}
+            prefetch
             aria-current={active ? "page" : undefined}
             className="pressable flex flex-col items-center justify-center gap-1 pb-1.5 pt-2.5 text-[10.5px] font-medium"
             style={{ color: active ? "var(--link)" : "var(--text-2)" }}

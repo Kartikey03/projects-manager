@@ -1,33 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useActionState } from "react";
 import Link from "next/link";
 import { ChevronLeft, Loader2, Sparkles } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { FormError } from "@/components/form";
+import { signIn, type SignInState } from "./actions";
+
+const initial: SignInState = { error: null, email: "" };
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (loading) return;
-    setLoading(true);
-    setError(null);
-    const { error } = await createClient().auth.signInWithPassword({ email, password });
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-    // The session cookie is set; a single navigation renders the dashboard.
-    router.replace("/dashboard");
-  }
+  const [state, action, pending] = useActionState(signIn, initial);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -45,12 +27,13 @@ export default function LoginPage() {
             <p className="mt-1 text-[15px] text-secondary">to your projects dashboard</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form action={action} className="space-y-3">
             <input
+              name="email"
               type="email"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              defaultValue={state.email}
+              key={state.email}
               className="input min-h-12"
               placeholder="Email"
               autoComplete="email"
@@ -58,21 +41,20 @@ export default function LoginPage() {
               aria-label="Email"
             />
             <input
+              name="password"
               type="password"
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               className="input min-h-12"
               placeholder="Password"
               autoComplete="current-password"
               aria-label="Password"
             />
 
-            <FormError error={error} />
+            <FormError error={state.error} />
 
-            <button type="submit" disabled={loading} className="btn-primary min-h-12 w-full text-[15px]">
-              {loading && <Loader2 size={17} className="animate-spin" />}
-              {loading ? "Signing in…" : "Sign in"}
+            <button type="submit" disabled={pending} className="btn-primary min-h-12 w-full text-[15px]">
+              {pending && <Loader2 size={17} className="animate-spin" />}
+              {pending ? "Signing in…" : "Sign in"}
             </button>
           </form>
         </div>

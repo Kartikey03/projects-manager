@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Check } from "lucide-react";
 import { updateProjectStatus } from "@/app/dashboard/actions";
 import { toast } from "@/components/Toaster";
@@ -61,14 +60,9 @@ export function StatusChanger({
         <ChevronDown size={14} />
       </button>
 
-      <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4, pointerEvents: "none" }}
-            transition={{ duration: 0.15 }}
-            className="absolute left-0 z-30 mt-2 w-48 rounded-2xl p-1.5"
+          <div
+            className="anim-pop-in absolute left-0 z-30 mt-2 w-48 rounded-2xl p-1.5"
             style={{ background: "#2c2c2e", border: "1px solid var(--hairline-strong)" }}
             role="listbox"
           >
@@ -91,9 +85,8 @@ export function StatusChanger({
                 </button>
               );
             })}
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }

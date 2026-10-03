@@ -272,6 +272,28 @@ select.input {
 }
 }
 
+/* Sheet, toast and menu motion — plain CSS, replaces framer-motion (~40 KB of JS). */
+@keyframes overlay-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes overlay-out { from { opacity: 1 } to { opacity: 0 } }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: none } }
+@keyframes sheet-out { from { opacity: 1; transform: none } to { opacity: 0; transform: translateY(24px) } }
+@keyframes pop-in { from { opacity: 0; transform: translateY(-6px) } to { opacity: 1; transform: none } }
+@keyframes pop-out { from { opacity: 1; transform: none } to { opacity: 0; transform: translateY(-6px) } }
+@keyframes skeleton-pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.55 } }
+
+@layer components {
+  .anim-overlay-in { animation: overlay-in 0.2s ease both; }
+  .anim-overlay-out { animation: overlay-out 0.18s ease both; }
+  .anim-sheet-in { animation: sheet-in 0.26s cubic-bezier(0.25, 0.1, 0.25, 1) both; }
+  .anim-sheet-out { animation: sheet-out 0.18s ease-in both; }
+  .anim-pop-in { animation: pop-in 0.16s ease-out both; }
+  .anim-pop-out { animation: pop-out 0.18s ease-in both; }
+  .skeleton {
+    background: rgba(255, 255, 255, 0.07);
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
