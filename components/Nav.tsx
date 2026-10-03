@@ -10,9 +10,9 @@ import {
   Wallet,
   LogOut,
   Loader2,
-  Sparkles,
 } from "lucide-react";
 import { signOut } from "@/app/dashboard/actions";
+import { Logo } from "@/components/Logo";
 
 const NAV = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -37,7 +37,7 @@ export function TopNav({ email }: { email: string }) {
     >
       <div className="mx-auto flex h-12 max-w-[1080px] items-center justify-between px-4 sm:px-6">
         <Link href="/dashboard" className="pressable flex items-center gap-2 text-[15px] font-semibold">
-          <Sparkles size={17} strokeWidth={2.2} />
+          <Logo size={26} />
           Projects
         </Link>
 

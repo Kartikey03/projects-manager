@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { getManagers, getProjectsWithStats } from "@/lib/queries";
 import { ProjectsBoard } from "@/components/ProjectsBoard";
+
+export const metadata: Metadata = { title: "Projects" };
 
 export default async function ProjectsPage() {
   const [projects, managers] = await Promise.all([getProjectsWithStats(), getManagers()]);

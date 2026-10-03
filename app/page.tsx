@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ChevronRight, FolderKanban, Wallet, Users, ShieldCheck, Sparkles } from "lucide-react";
+import { ChevronRight, FolderKanban, Wallet, Users, ShieldCheck } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 const features = [
   {
@@ -36,7 +37,7 @@ export default function Landing() {
       <header className="glass sticky top-0 z-40 border-b" style={{ borderColor: "var(--hairline)" }}>
         <div className="mx-auto flex h-12 max-w-[1080px] items-center justify-between px-4 sm:px-6">
           <span className="flex items-center gap-2 text-[15px] font-semibold">
-            <Sparkles size={17} strokeWidth={2.2} /> Projects
+            <Logo size={26} /> Projects
           </span>
           <Link href="/login" className="link pressable text-sm">
             Sign in
@@ -46,6 +47,7 @@ export default function Landing() {
 
       <main>
         <section className="mx-auto max-w-[1080px] px-5 pb-16 pt-20 text-center sm:pt-28">
+          <Logo size={96} className="fade-in mx-auto mb-5 sm:size-[112px]" />
           <p className="fade-in text-[17px] font-semibold text-secondary sm:text-[21px]">Projects Manager</p>
           <h1 className="fade-in fade-in-d1 mx-auto mt-2 max-w-3xl text-[44px] font-semibold leading-[1.05] sm:text-[72px]">
             Freelance work.
@@ -74,9 +76,9 @@ export default function Landing() {
                 { label: "Received", value: "₹3,15,000", tone: "var(--green)" },
                 { label: "Outstanding", value: "₹1,65,000", tone: "var(--amber)" },
               ].map((s) => (
-                <div key={s.label} className="rounded-2xl p-3 sm:p-5" style={{ background: "var(--surface)" }}>
+                <div key={s.label} className="min-w-0 rounded-2xl px-2.5 py-3 sm:p-5" style={{ background: "var(--surface)" }}>
                   <div className="text-[11px] text-secondary sm:text-[13px]">{s.label}</div>
-                  <div className="display tabular mt-1 truncate text-[15px] font-semibold sm:text-[26px]" style={{ color: s.tone }}>
+                  <div className="display tabular mt-1 whitespace-nowrap text-[13px] font-semibold min-[400px]:text-[15px] sm:text-[26px]" style={{ color: s.tone }}>
                     {s.value}
                   </div>
                 </div>

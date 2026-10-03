@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import {
@@ -12,6 +13,8 @@ import { ProjectEditor } from "@/components/ProjectEditor";
 import { PaymentEditor } from "@/components/PaymentEditor";
 import { PageHeader, SectionTitle } from "@/components/PageHeader";
 import { formatMoney, formatDate, sumByCurrency } from "@/lib/format";
+
+export const metadata: Metadata = { title: "Overview" };
 
 const zeroINR = [{ currency: "INR", value: 0 }];
 

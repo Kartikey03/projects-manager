@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, Trash2, Calendar, User, Briefcase } from "lucide-react";
@@ -10,6 +11,15 @@ import { PaymentEditor } from "@/components/PaymentEditor";
 import { ConfirmSubmit } from "@/components/ConfirmSubmit";
 import { SectionTitle } from "@/components/PageHeader";
 import { formatMoney, formatDate } from "@/lib/format";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { project } = await getProjectDetail((await params).id);
+  return { title: project?.title ?? "Project" };
+}
 
 export default async function ProjectDetailPage({
   params,

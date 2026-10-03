@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Trash2, Phone, Mail } from "lucide-react";
 import { getManagers, getProjectsWithStats } from "@/lib/queries";
 import { deleteManager } from "@/app/dashboard/actions";
@@ -5,6 +6,8 @@ import { ManagerEditor } from "@/components/ManagerEditor";
 import { ConfirmSubmit } from "@/components/ConfirmSubmit";
 import { PageHeader } from "@/components/PageHeader";
 import { joinMoney, sumByCurrency } from "@/lib/format";
+
+export const metadata: Metadata = { title: "People" };
 
 export default async function PeoplePage() {
   const [managers, projects] = await Promise.all([getManagers(), getProjectsWithStats()]);

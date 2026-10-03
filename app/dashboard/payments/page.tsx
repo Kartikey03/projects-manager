@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import { getProjectsWithStats, getRecentPayments, toPaymentOption } from "@/lib/queries";
@@ -7,6 +8,8 @@ import { PaymentEditor } from "@/components/PaymentEditor";
 import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
 import { formatMoney, formatDate, joinMoney, sumByCurrency } from "@/lib/format";
+
+export const metadata: Metadata = { title: "Payments" };
 
 const zeroINR = [{ currency: "INR", value: 0 }];
 

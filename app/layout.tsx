@@ -1,9 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+const description = "Track freelance projects, referral sources and irregular payments in one place.";
+
 export const metadata: Metadata = {
-  title: "Projects Manager",
-  description: "Track freelance projects, referral sources and irregular payments in one place.",
+  // absolute base so the social preview image resolves when the link is shared
+  metadataBase: new URL("https://theog-projects-manager.vercel.app"),
+  title: { default: "Projects Manager", template: "%s · Projects Manager" },
+  description,
+  applicationName: "Projects Manager",
+  appleWebApp: { capable: true, title: "Projects", statusBarStyle: "black" },
+  openGraph: { type: "website", siteName: "Projects Manager", title: "Projects Manager", description },
+  twitter: { card: "summary_large_image", title: "Projects Manager", description },
 };
 
 export const viewport: Viewport = {

@@ -2,7 +2,8 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { ChevronLeft, Loader2, Sparkles } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
+import { Logo } from "@/components/Logo";
 import { FormError } from "@/components/form";
 import { signIn, type SignInState } from "./actions";
 
@@ -22,7 +23,7 @@ export default function LoginPage() {
       <main className="flex flex-1 items-center justify-center px-5 pb-24">
         <div className="fade-in w-full max-w-[360px]">
           <div className="mb-8 text-center">
-            <Sparkles size={34} strokeWidth={1.8} className="mx-auto" />
+            <Logo size={72} className="mx-auto" />
             <h1 className="mt-4 text-[32px] font-semibold">Sign in</h1>
             <p className="mt-1 text-[15px] text-secondary">to your projects dashboard</p>
           </div>
