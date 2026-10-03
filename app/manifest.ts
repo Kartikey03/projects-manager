@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 // "Add to Home Screen" installs the dashboard as a standalone app with the brand icon.
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Projects Manager",
-    short_name: "Projects",
+    name: "Ordo",
+    short_name: "Ordo",
     description: "Track freelance projects, referral sources and irregular payments.",
     start_url: "/dashboard",
     display: "standalone",

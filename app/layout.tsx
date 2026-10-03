@@ -6,12 +6,12 @@ const description = "Track freelance projects, referral sources and irregular pa
 export const metadata: Metadata = {
   // absolute base so the social preview image resolves when the link is shared
   metadataBase: new URL("https://theog-projects-manager.vercel.app"),
-  title: { default: "Projects Manager", template: "%s · Projects Manager" },
+  title: { default: "Ordo", template: "%s · Ordo" },
   description,
-  applicationName: "Projects Manager",
-  appleWebApp: { capable: true, title: "Projects", statusBarStyle: "black" },
-  openGraph: { type: "website", siteName: "Projects Manager", title: "Projects Manager", description },
-  twitter: { card: "summary_large_image", title: "Projects Manager", description },
+  applicationName: "Ordo",
+  appleWebApp: { capable: true, title: "Ordo", statusBarStyle: "black" },
+  openGraph: { type: "website", siteName: "Ordo", title: "Ordo", description },
+  twitter: { card: "summary_large_image", title: "Ordo", description },
 };
 
 export const viewport: Viewport = {

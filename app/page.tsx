@@ -37,7 +37,7 @@ export default function Landing() {
       <header className="glass sticky top-0 z-40 border-b" style={{ borderColor: "var(--hairline)" }}>
         <div className="mx-auto flex h-12 max-w-[1080px] items-center justify-between px-4 sm:px-6">
           <span className="flex items-center gap-2 text-[15px] font-semibold">
-            <Logo size={26} /> Projects
+            <Logo size={26} /> Ordo
           </span>
           <Link href="/login" className="link pressable text-sm">
             Sign in
@@ -48,7 +48,7 @@ export default function Landing() {
       <main>
         <section className="mx-auto max-w-[1080px] px-5 pb-16 pt-20 text-center sm:pt-28">
           <Logo size={96} className="fade-in mx-auto mb-5 sm:size-[112px]" />
-          <p className="fade-in text-[17px] font-semibold text-secondary sm:text-[21px]">Projects Manager</p>
+          <p className="fade-in text-[17px] font-semibold text-secondary sm:text-[21px]">Ordo</p>
           <h1 className="fade-in fade-in-d1 mx-auto mt-2 max-w-3xl text-[44px] font-semibold leading-[1.05] sm:text-[72px]">
             Freelance work.
             <br />
@@ -119,7 +119,7 @@ export default function Landing() {
       </main>
 
       <footer className="border-t py-8 text-center text-xs text-tertiary" style={{ borderColor: "var(--hairline)" }}>
-        Projects Manager · Your data stays private.
+        Ordo · Your data stays private.
       </footer>
     </div>
   );

@@ -110,16 +110,16 @@ async function ogImage(master) {
   const icon = await png(master, ICON);
   const text = Buffer.from(`
     <svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-      <text x="50%" y="412" text-anchor="middle" fill="#f5f5f7"
+      <text x="50%" y="436" text-anchor="middle" fill="#f5f5f7"
         font-family="SF Pro Display, Helvetica Neue, Helvetica, Arial, sans-serif"
-        font-size="64" font-weight="600" letter-spacing="-1.4">Projects Manager</text>
-      <text x="50%" y="472" text-anchor="middle" fill="#86868b"
+        font-size="96" font-weight="600" letter-spacing="-2.5">Ordo</text>
+      <text x="50%" y="500" text-anchor="middle" fill="#86868b"
         font-family="SF Pro Text, Helvetica Neue, Helvetica, Arial, sans-serif"
         font-size="30">Freelance projects and payments, finally in order.</text>
     </svg>`);
   return sharp({ create: { width: W, height: H, channels: 3, background: "#000000" } })
     .composite([
-      { input: icon, top: 110, left: Math.round((W - ICON) / 2) },
+      { input: icon, top: 90, left: Math.round((W - ICON) / 2) },
       { input: text, top: 0, left: 0 },
     ])
     .png({ compressionLevel: 9 })

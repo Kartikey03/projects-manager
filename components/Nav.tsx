@@ -38,7 +38,7 @@ export function TopNav({ email }: { email: string }) {
       <div className="mx-auto flex h-12 max-w-[1080px] items-center justify-between px-4 sm:px-6">
         <Link href="/dashboard" className="pressable flex items-center gap-2 text-[15px] font-semibold">
           <Logo size={26} />
-          Projects
+          Ordo
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">

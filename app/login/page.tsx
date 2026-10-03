@@ -25,7 +25,7 @@ export default function LoginPage() {
           <div className="mb-8 text-center">
             <Logo size={72} className="mx-auto" />
             <h1 className="mt-4 text-[32px] font-semibold">Sign in</h1>
-            <p className="mt-1 text-[15px] text-secondary">to your projects dashboard</p>
+            <p className="mt-1 text-[15px] text-secondary">to Ordo</p>
           </div>
 
           <form action={action} className="space-y-3">

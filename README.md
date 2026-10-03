@@ -1,9 +1,9 @@
-# Projects Manager
+# Ordo
 
 A calm, fast dashboard for freelancers to track **projects**, the **people who bring
 them in**, and **irregular payments** — replacing the spreadsheet.
 
-Built with **Next.js (App Router) + React + Supabase**, animated with **Framer Motion**,
+Built with **Next.js (App Router) + React + Supabase**, with lightweight CSS animations,
 styled with **Tailwind CSS** and Apple's system font (San Francisco).
 
 ## Features
@@ -24,7 +24,7 @@ styled with **Tailwind CSS** and Apple's system font (San Francisco).
 | Layer     | Choice                                   |
 | --------- | ---------------------------------------- |
 | Framework | Next.js 16 (App Router, Server Actions)  |
-| UI        | React, Tailwind CSS, Framer Motion, lucide-react |
+| UI        | React, Tailwind CSS, lucide-react |
 | Backend   | Supabase (Postgres + Auth + RLS)         |
 | Auth      | Supabase email/password via `@supabase/ssr` |
 
