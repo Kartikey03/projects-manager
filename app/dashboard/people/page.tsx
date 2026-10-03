@@ -3,100 +3,89 @@ import { getManagers, getProjectsWithStats } from "@/lib/queries";
 import { deleteManager } from "@/app/dashboard/actions";
 import { ManagerEditor } from "@/components/ManagerEditor";
 import { ConfirmSubmit } from "@/components/ConfirmSubmit";
-import { formatMoney } from "@/lib/format";
+import { PageHeader } from "@/components/PageHeader";
+import { joinMoney, sumByCurrency } from "@/lib/format";
 
 export default async function PeoplePage() {
-  const [managers, projects] = await Promise.all([
-    getManagers(),
-    getProjectsWithStats(),
-  ]);
-
-  const stats = new Map<string, { count: number; booked: number; paid: number }>();
-  for (const p of projects) {
-    if (!p.manager_id) continue;
-    const s = stats.get(p.manager_id) ?? { count: 0, booked: 0, paid: 0 };
-    s.count += 1;
-    s.booked += p.booked_amount;
-    s.paid += p.paid;
-    stats.set(p.manager_id, s);
-  }
+  const [managers, projects] = await Promise.all([getManagers(), getProjectsWithStats()]);
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">People</h1>
-          <p className="mt-1 text-secondary">The folks who bring you work.</p>
-        </div>
+    <div>
+      <PageHeader title="People" subtitle="The folks who bring you work.">
         <ManagerEditor trigger={{ label: "Add person", icon: "plus", variant: "primary" }} />
-      </div>
+      </PageHeader>
 
       {managers.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed py-20 text-center" style={{ borderColor: "var(--border-strong)" }}>
-          <p className="mb-4 text-secondary">No one added yet. Add the people who send you projects.</p>
-          <ManagerEditor trigger={{ label: "Add your first", icon: "plus", variant: "primary" }} />
+        <div className="card px-6 py-16 text-center text-secondary">
+          No one added yet. Add the people who send you projects.
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {managers.map((m) => {
-            const s = stats.get(m.id) ?? { count: 0, booked: 0, paid: 0 };
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          {managers.map((m, i) => {
+            const theirs = projects.filter((p) => p.manager_id === m.id && p.status !== "cancelled");
+            const booked = sumByCurrency(theirs, (p) => p.booked_amount, (p) => p.currency);
+            const paid = sumByCurrency(theirs, (p) => p.paid, (p) => p.currency);
             return (
-              <div key={m.id} className="card group flex flex-col p-5">
-                <div className="mb-3 flex items-start justify-between">
-                  <div className="flex items-center gap-3">
+              <div
+                key={m.id}
+                className={`card fade-in ${i < 3 ? `fade-in-d${i + 1}` : ""} flex flex-col p-5`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-3">
                     <div
-                      className="flex h-11 w-11 items-center justify-center rounded-full text-base font-semibold text-white"
-                      style={{ background: "linear-gradient(135deg, #0a84ff, #bf5af2)" }}
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[17px] font-semibold"
+                      style={{ background: "#2c2c2e" }}
                     >
                       {m.name.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <div className="font-semibold">{m.name}</div>
-                      <div className="text-xs text-tertiary">
-                        {s.count} project{s.count === 1 ? "" : "s"}
+                    <div className="min-w-0">
+                      <div className="truncate text-[17px] font-semibold">{m.name}</div>
+                      <div className="text-[13px] text-tertiary tabular">
+                        {theirs.length} project{theirs.length === 1 ? "" : "s"}
                       </div>
                     </div>
                   </div>
-                  <div className="flex gap-1 md:opacity-0 md:transition md:group-hover:opacity-100">
-                    <ManagerEditor manager={m} trigger={{ icon: "pencil", variant: "icon" }} />
+                  <div className="-mr-2 -mt-1 flex shrink-0">
+                    <ManagerEditor manager={m} trigger={{ icon: "pencil", variant: "icon", ariaLabel: `Edit ${m.name}` }} />
                     <form action={deleteManager}>
                       <input type="hidden" name="id" value={m.id} />
                       <ConfirmSubmit
-                        message={`Remove ${m.name}? Their projects will stay but lose the source link.`}
-                        className="pressable rounded-full p-2 text-tertiary hover:bg-[var(--border)] hover:text-[var(--red)]"
+                        message={`Remove ${m.name}? Their projects stay but lose the source link.`}
+                        className="icon-btn hover:text-[var(--red)]"
+                        title={`Remove ${m.name}`}
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={16} />
                       </ConfirmSubmit>
                     </form>
                   </div>
                 </div>
 
                 {(m.phone || m.email) && (
-                  <div className="mb-3 space-y-1 text-sm text-secondary">
+                  <div className="mt-4 space-y-1.5 text-sm">
                     {m.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone size={14} className="text-tertiary" /> {m.phone}
-                      </div>
+                      <a href={`tel:${m.phone}`} className="link pressable flex items-center gap-2">
+                        <Phone size={14} /> {m.phone}
+                      </a>
                     )}
                     {m.email && (
-                      <div className="flex items-center gap-2">
-                        <Mail size={14} className="text-tertiary" /> {m.email}
-                      </div>
+                      <a href={`mailto:${m.email}`} className="link pressable flex min-w-0 items-center gap-2">
+                        <Mail size={14} className="shrink-0" /> <span className="truncate">{m.email}</span>
+                      </a>
                     )}
                   </div>
                 )}
 
-                {m.notes && <p className="mb-3 text-sm text-secondary">{m.notes}</p>}
+                {m.notes && <p className="mt-3 text-sm text-secondary">{m.notes}</p>}
 
-                <div className="mt-auto grid grid-cols-2 gap-3 border-t pt-3" style={{ borderColor: "var(--border)" }}>
-                  <div>
+                <div className="mt-auto grid grid-cols-2 gap-3 border-t pt-4" style={{ borderColor: "var(--hairline)", marginTop: "1.25rem" }}>
+                  <div className="min-w-0">
                     <div className="text-xs text-tertiary">Brought in</div>
-                    <div className="text-sm font-semibold">{formatMoney(s.booked)}</div>
+                    <div className="tabular truncate text-sm font-semibold">{joinMoney(booked)}</div>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-xs text-tertiary">Received</div>
-                    <div className="text-sm font-semibold" style={{ color: "var(--green)" }}>
-                      {formatMoney(s.paid)}
+                    <div className="tabular truncate text-sm font-semibold" style={{ color: "var(--green)" }}>
+                      {joinMoney(paid)}
                     </div>
                   </div>
                 </div>

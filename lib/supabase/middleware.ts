@@ -25,15 +25,25 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims() verifies the JWT locally against the project's ES256 keys and
+  // refreshes an expired session — no Auth-server round-trip per request.
+  const { data } = await supabase.auth.getClaims();
+  const signedIn = !!data?.claims?.sub;
 
-  // Protect the dashboard: unauthenticated users are redirected to the landing page.
-  if (!user && request.nextUrl.pathname.startsWith("/dashboard")) {
+  // Redirects must carry any refreshed session cookies, or the user gets signed out.
+  const redirectTo = (pathname: string) => {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+    url.pathname = pathname;
+    const res = NextResponse.redirect(url);
+    supabaseResponse.cookies.getAll().forEach((c) => res.cookies.set(c));
+    return res;
+  };
+
+  if (!signedIn && request.nextUrl.pathname.startsWith("/dashboard")) {
+    return redirectTo("/login");
+  }
+  if (signedIn && request.nextUrl.pathname === "/login") {
+    return redirectTo("/dashboard");
   }
 
   return supabaseResponse;

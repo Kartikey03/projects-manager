@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, createContext, useContext } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 
-const ModalCtx = createContext<{ close: () => void }>({ close: () => {} });
-export const useModal = () => useContext(ModalCtx);
+const noopSubscribe = () => () => {};
 
 /**
- * A trigger button that opens a modal containing `children`.
- * `render` receives a `close` fn so forms can dismiss on submit.
+ * Trigger + sheet. The sheet is portaled to <body> so it is always laid out
+ * against the viewport — a transformed ancestor (e.g. an animated card) can
+ * no longer shrink it or trap clicks.
  */
 export function Modal({
   trigger,
@@ -18,55 +19,69 @@ export function Modal({
 }: {
   trigger: (open: () => void) => React.ReactNode;
   title: string;
-  children: React.ReactNode | ((close: () => void) => React.ReactNode);
+  children: (close: () => void) => React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  const close = () => setOpen(false);
+  const close = useCallback(() => setOpen(false), []);
+  // false during SSR/hydration, true on the client — document.body exists only then
+  const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
+
+  // Escape to close + lock background scroll while open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
     <>
       {trigger(() => setOpen(true))}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="absolute inset-0"
-              style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)" }}
-              onClick={close}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
-            <motion.div
-              className="card relative z-10 max-h-[92vh] w-full overflow-y-auto rounded-b-none rounded-t-[22px] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:max-w-lg sm:rounded-[22px] sm:p-6 sm:pb-6"
-              style={{ boxShadow: "var(--shadow-lg)" }}
-              initial={{ opacity: 0, y: 40, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 40, scale: 0.98 }}
-              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <div className="mb-5 flex items-center justify-between">
-                <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-                <button
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <div
+                key="sheet"
+                className="pointer-events-none fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6"
+                role="dialog"
+                aria-modal="true"
+                aria-label={title}
+              >
+                <motion.div
+                  className="pointer-events-auto absolute inset-0 bg-black/60"
                   onClick={close}
-                  className="pressable -mr-1 rounded-full p-2 text-secondary hover:bg-[var(--border)]"
-                  aria-label="Close"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, pointerEvents: "none" }}
+                  transition={{ duration: 0.2 }}
+                />
+                <motion.div
+                  className="pointer-events-auto relative max-h-[90dvh] w-full overflow-y-auto rounded-t-[22px] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:max-w-lg sm:rounded-[22px] sm:p-7"
+                  style={{ background: "var(--card)", border: "1px solid var(--hairline)" }}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 24, pointerEvents: "none" }}
+                  transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
                 >
-                  <X size={20} />
-                </button>
+                  <div className="mb-6 flex items-center justify-between">
+                    <h2 className="text-xl font-semibold">{title}</h2>
+                    <button onClick={close} className="icon-btn -mr-2" aria-label="Close">
+                      <X size={20} />
+                    </button>
+                  </div>
+                  {children(close)}
+                </motion.div>
               </div>
-              <ModalCtx.Provider value={{ close }}>
-                {typeof children === "function" ? children(close) : children}
-              </ModalCtx.Provider>
-            </motion.div>
-          </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </>
   );
 }

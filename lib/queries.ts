@@ -1,5 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Manager, Payment, Project, ProjectWithStats } from "@/lib/types";
+import type {
+  Manager,
+  Payment,
+  PaymentProjectOption,
+  Project,
+  ProjectWithStats,
+} from "@/lib/types";
 
 export async function getManagers(): Promise<Manager[]> {
   const supabase = await createClient();
@@ -104,4 +110,16 @@ export async function getRecentPayments(limit = 12): Promise<
       currency: info?.currency ?? "INR",
     };
   });
+}
+
+/** Shape a project for the payment picker (plain data, safe to pass to client components). */
+export function toPaymentOption(p: ProjectWithStats): PaymentProjectOption {
+  return {
+    id: p.id,
+    title: p.title,
+    currency: p.currency,
+    balance: p.balance,
+    booked: p.booked_amount,
+    source: p.manager?.name ?? null,
+  };
 }

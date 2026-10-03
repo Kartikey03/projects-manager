@@ -3,8 +3,8 @@ import { Plus, Pencil, Trash2, Wallet } from "lucide-react";
 export type TriggerSpec = {
   label?: string;
   icon?: "plus" | "pencil" | "trash" | "wallet";
-  /** visual style; ignored if `className` is provided */
-  variant?: "primary" | "ghost" | "icon";
+  variant?: "primary" | "secondary" | "icon" | "link";
+  /** extra classes appended to the variant's classes */
   className?: string;
   ariaLabel?: string;
 };
@@ -12,19 +12,24 @@ export type TriggerSpec = {
 const ICONS = { plus: Plus, pencil: Pencil, trash: Trash2, wallet: Wallet };
 
 const VARIANT_CLASS: Record<NonNullable<TriggerSpec["variant"]>, string> = {
-  primary: "btn-primary flex shrink-0 items-center justify-center gap-2 whitespace-nowrap px-5 py-2.5 text-sm",
-  ghost: "btn-ghost flex shrink-0 items-center justify-center gap-2 whitespace-nowrap px-4 py-2.5 text-sm",
-  icon: "pressable rounded-full p-2 text-tertiary hover:bg-[var(--border)] hover:text-[var(--text)]",
+  primary: "btn-primary",
+  secondary: "btn-secondary",
+  icon: "icon-btn",
+  link: "link pressable inline-flex items-center gap-1 text-sm font-medium",
 };
 
-/** Renders a modal trigger button from a serializable spec. Safe to call inside client components. */
+/** Renders a modal trigger from a serializable spec (safe to pass from Server Components). */
 export function renderTrigger(spec: TriggerSpec, open: () => void) {
   const Icon = spec.icon ? ICONS[spec.icon] : null;
-  const cls = spec.className ?? VARIANT_CLASS[spec.variant ?? "primary"];
-  const iconSize = (spec.variant ?? "primary") === "primary" ? 17 : 15;
+  const variant = spec.variant ?? "primary";
   return (
-    <button onClick={open} className={cls} aria-label={spec.ariaLabel}>
-      {Icon && <Icon size={iconSize} />}
+    <button
+      type="button"
+      onClick={open}
+      className={`${VARIANT_CLASS[variant]} ${spec.className ?? ""}`}
+      aria-label={spec.ariaLabel ?? spec.label}
+    >
+      {Icon && <Icon size={variant === "icon" ? 17 : 16} strokeWidth={2.2} />}
       {spec.label}
     </button>
   );

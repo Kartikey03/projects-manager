@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Sparkles, Loader2, ArrowLeft } from "lucide-react";
+import { ChevronLeft, Loader2, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { FormError } from "@/components/form";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,104 +16,67 @@ export default function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
     setError(null);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await createClient().auth.signInWithPassword({ email, password });
     if (error) {
       setError(error.message);
       setLoading(false);
       return;
     }
-    router.push("/dashboard");
-    router.refresh();
+    // The session cookie is set; a single navigation renders the dashboard.
+    router.replace("/dashboard");
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-6">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div
-          className="blob-1 absolute -top-24 left-1/4 h-[420px] w-[420px] rounded-full opacity-40 blur-3xl"
-          style={{ background: "radial-gradient(circle, #0a84ff, transparent 70%)" }}
-        />
-        <div
-          className="blob-2 absolute bottom-0 right-1/4 h-[420px] w-[420px] rounded-full opacity-30 blur-3xl"
-          style={{ background: "radial-gradient(circle, #bf5af2, transparent 70%)" }}
-        />
-      </div>
+    <div className="flex min-h-screen flex-col">
+      <header className="mx-auto flex h-12 w-full max-w-[1080px] items-center px-4 sm:px-6">
+        <Link href="/" className="link pressable -ml-1 inline-flex items-center text-sm">
+          <ChevronLeft size={18} /> Home
+        </Link>
+      </header>
 
-      <Link
-        href="/"
-        className="absolute left-6 top-6 inline-flex items-center gap-1.5 text-sm text-secondary transition hover:opacity-70"
-      >
-        <ArrowLeft size={16} /> Back
-      </Link>
-
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="card w-full max-w-sm p-8"
-        style={{ boxShadow: "var(--shadow-lg)" }}
-      >
-        <div className="mb-6 flex flex-col items-center text-center">
-          <div
-            className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl text-white"
-            style={{ background: "var(--accent)" }}
-          >
-            <Sparkles size={22} />
+      <main className="flex flex-1 items-center justify-center px-5 pb-24">
+        <div className="fade-in w-full max-w-[360px]">
+          <div className="mb-8 text-center">
+            <Sparkles size={34} strokeWidth={1.8} className="mx-auto" />
+            <h1 className="mt-4 text-[32px] font-semibold">Sign in</h1>
+            <p className="mt-1 text-[15px] text-secondary">to your projects dashboard</p>
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-          <p className="mt-1 text-sm text-secondary">Sign in to view your dashboard</p>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="mb-1.5 block text-sm font-medium">Email</label>
+          <form onSubmit={handleSubmit} className="space-y-3">
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input w-full px-4 py-2.5 text-sm"
-              placeholder="you@example.com"
+              className="input min-h-12"
+              placeholder="Email"
               autoComplete="email"
+              inputMode="email"
+              aria-label="Email"
             />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-sm font-medium">Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="input w-full px-4 py-2.5 text-sm"
-              placeholder="••••••••"
+              className="input min-h-12"
+              placeholder="Password"
               autoComplete="current-password"
+              aria-label="Password"
             />
-          </div>
 
-          {error && (
-            <motion.p
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-lg px-3 py-2 text-sm"
-              style={{ background: "rgba(255,69,58,0.12)", color: "var(--red)" }}
-            >
-              {error}
-            </motion.p>
-          )}
+            <FormError error={error} />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary flex w-full items-center justify-center gap-2 py-2.5 text-sm disabled:opacity-60"
-          >
-            {loading ? <Loader2 size={16} className="animate-spin" /> : null}
-            {loading ? "Signing in…" : "Sign in"}
-          </button>
-        </form>
-      </motion.div>
+            <button type="submit" disabled={loading} className="btn-primary min-h-12 w-full text-[15px]">
+              {loading && <Loader2 size={17} className="animate-spin" />}
+              {loading ? "Signing in…" : "Sign in"}
+            </button>
+          </form>
+        </div>
+      </main>
     </div>
   );
 }

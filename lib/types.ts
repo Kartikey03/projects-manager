@@ -10,8 +10,8 @@ export const STATUS_META: Record<
   ProjectStatus,
   { label: string; color: string; bg: string; dot: string }
 > = {
-  lead: { label: "Lead", color: "#8E8E93", bg: "rgba(142,142,147,0.12)", dot: "#8E8E93" },
-  in_progress: { label: "In Progress", color: "#0A84FF", bg: "rgba(10,132,255,0.12)", dot: "#0A84FF" },
+  lead: { label: "Lead", color: "#AEAEB2", bg: "rgba(142,142,147,0.18)", dot: "#AEAEB2" },
+  in_progress: { label: "In Progress", color: "#409CFF", bg: "rgba(10,132,255,0.16)", dot: "#409CFF" },
   review: { label: "In Review", color: "#BF5AF2", bg: "rgba(191,90,242,0.12)", dot: "#BF5AF2" },
   completed: { label: "Completed", color: "#30D158", bg: "rgba(48,209,88,0.14)", dot: "#30D158" },
   on_hold: { label: "On Hold", color: "#FF9F0A", bg: "rgba(255,159,10,0.14)", dot: "#FF9F0A" },
@@ -62,6 +62,16 @@ export type Payment = {
   method: string | null;
   notes: string | null;
   created_at: string;
+};
+
+// Minimal project info the payment picker needs (serializable across the RSC boundary).
+export type PaymentProjectOption = {
+  id: string;
+  title: string;
+  currency: string;
+  balance: number;
+  booked: number;
+  source: string | null;
 };
 
 // Project joined with its manager + payment totals (computed in queries).

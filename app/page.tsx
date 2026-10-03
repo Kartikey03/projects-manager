@@ -1,236 +1,123 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  Wallet,
-  FolderKanban,
-  Users,
-  TrendingUp,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: (i: number = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
-  }),
-};
+import { ChevronRight, FolderKanban, Wallet, Users, ShieldCheck, Sparkles } from "lucide-react";
 
 const features = [
   {
     icon: FolderKanban,
-    title: "Every project, one place",
-    desc: "Track status from lead to delivered — no more scattered spreadsheets.",
+    title: "Every project, one place.",
+    desc: "Track each job from lead to delivered without a spreadsheet in sight.",
   },
   {
     icon: Wallet,
-    title: "Irregular payments, tamed",
-    desc: "See booked vs. received vs. outstanding for each project, instantly.",
+    title: "Irregular payments, handled.",
+    desc: "Booked, received and outstanding — per project, in every currency you bill.",
   },
   {
     icon: Users,
-    title: "Know your sources",
-    desc: "Attribute every gig to the person who brought it in.",
+    title: "Know your sources.",
+    desc: "See exactly how much work each person who refers you has brought in.",
   },
   {
-    icon: TrendingUp,
-    title: "Cashflow at a glance",
-    desc: "Live totals so you always know what you're owed.",
+    icon: ShieldCheck,
+    title: "Private by design.",
+    desc: "Your numbers are visible only after you sign in. Sharing the link shows nothing.",
   },
+];
+
+const preview = [
+  { title: "Landing page for Acme", due: "₹25,000", pct: 50 },
+  { title: "Mobile app UI kit", due: "$400", pct: 20 },
+  { title: "Brand identity — Nova", due: "£300", pct: 70 },
 ];
 
 export default function Landing() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* animated background blobs */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div
-          className="blob-1 absolute -top-32 -left-24 h-[420px] w-[420px] rounded-full opacity-40 blur-3xl"
-          style={{ background: "radial-gradient(circle, #0a84ff, transparent 70%)" }}
-        />
-        <div
-          className="blob-2 absolute top-40 -right-24 h-[480px] w-[480px] rounded-full opacity-30 blur-3xl"
-          style={{ background: "radial-gradient(circle, #bf5af2, transparent 70%)" }}
-        />
-        <div
-          className="blob-1 absolute bottom-0 left-1/3 h-[360px] w-[360px] rounded-full opacity-25 blur-3xl"
-          style={{ background: "radial-gradient(circle, #30d158, transparent 70%)" }}
-        />
-      </div>
-
-      {/* nav */}
-      <header className="glass sticky top-0 z-20 border-b" style={{ borderColor: "var(--border)" }}>
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2 font-semibold">
-            <div
-              className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
-              style={{ background: "var(--accent)" }}
-            >
-              <Sparkles size={17} />
-            </div>
-            Projects Manager
-          </div>
-          <Link
-            href="/login"
-            className="btn-primary px-5 py-2 text-sm"
-          >
+    <div className="min-h-screen">
+      <header className="glass sticky top-0 z-40 border-b" style={{ borderColor: "var(--hairline)" }}>
+        <div className="mx-auto flex h-12 max-w-[1080px] items-center justify-between px-4 sm:px-6">
+          <span className="flex items-center gap-2 text-[15px] font-semibold">
+            <Sparkles size={17} strokeWidth={2.2} /> Projects
+          </span>
+          <Link href="/login" className="link pressable text-sm">
             Sign in
           </Link>
         </div>
       </header>
 
-      {/* hero */}
-      <section className="mx-auto max-w-6xl px-6 pt-20 pb-16 text-center sm:pt-28">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={0}
-          className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm text-secondary"
-          style={{ borderColor: "var(--border)", background: "var(--card-solid)" }}
-        >
-          <ShieldCheck size={15} style={{ color: "var(--green)" }} />
-          Your data stays private — visible only after you sign in
-        </motion.div>
-
-        <motion.h1
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={1}
-          className="mx-auto max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl"
-        >
-          Freelance projects &amp; payments,
-          <br />
-          <span
-            style={{
-              background: "linear-gradient(90deg, #0a84ff, #bf5af2)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            finally organised.
-          </span>
-        </motion.h1>
-
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={2}
-          className="mx-auto mt-6 max-w-xl text-lg text-secondary"
-        >
-          Ditch the spreadsheet. Manage projects, the people who bring them to you,
-          and every irregular payment — all in one calm, fast dashboard.
-        </motion.p>
-
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          custom={3}
-          className="mt-9 flex items-center justify-center gap-3"
-        >
-          <Link href="/login" className="btn-primary inline-flex items-center gap-2 px-7 py-3 text-[15px]">
-            Open your dashboard <ArrowRight size={17} />
-          </Link>
-        </motion.div>
-
-        {/* preview mock */}
-        <motion.div
-          initial={{ opacity: 0, y: 60, rotateX: 12 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ delay: 0.4, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="card mx-auto mt-16 max-w-4xl overflow-hidden p-0 text-left"
-          style={{ boxShadow: "var(--shadow-lg)" }}
-        >
-          <div className="flex items-center gap-1.5 border-b px-4 py-3" style={{ borderColor: "var(--border)" }}>
-            <span className="h-3 w-3 rounded-full" style={{ background: "#ff5f57" }} />
-            <span className="h-3 w-3 rounded-full" style={{ background: "#febc2e" }} />
-            <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
+      <main>
+        <section className="mx-auto max-w-[1080px] px-5 pb-16 pt-20 text-center sm:pt-28">
+          <p className="fade-in text-[17px] font-semibold text-secondary sm:text-[21px]">Projects Manager</p>
+          <h1 className="fade-in fade-in-d1 mx-auto mt-2 max-w-3xl text-[44px] font-semibold leading-[1.05] sm:text-[72px]">
+            Freelance work.
+            <br />
+            Finally in order.
+          </h1>
+          <p className="fade-in fade-in-d2 mx-auto mt-5 max-w-xl text-[19px] leading-snug text-secondary sm:text-[21px]">
+            Projects, the people who bring them, and every irregular payment — in one calm place.
+          </p>
+          <div className="fade-in fade-in-d3 mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
+            <Link href="/login" className="btn-primary min-h-11 px-6 text-[17px]">
+              Sign in
+            </Link>
+            <a href="#features" className="link pressable inline-flex items-center text-[17px]">
+              Learn more <ChevronRight size={18} />
+            </a>
           </div>
-          <div className="grid gap-4 p-6 sm:grid-cols-3">
-            {[
-              { label: "Total booked", value: "₹4,80,000", tone: "var(--text)" },
-              { label: "Received", value: "₹3,15,000", tone: "var(--green)" },
-              { label: "Outstanding", value: "₹1,65,000", tone: "var(--amber)" },
-            ].map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + i * 0.1 }}
-                className="rounded-2xl border p-4"
-                style={{ borderColor: "var(--border)", background: "var(--bg)" }}
-              >
-                <div className="text-xs text-secondary">{s.label}</div>
-                <div className="mt-1 text-2xl font-semibold" style={{ color: s.tone }}>
-                  {s.value}
+        </section>
+
+        {/* product shot */}
+        <section className="fade-in fade-in-d3 mx-auto max-w-4xl px-5">
+          <div className="card overflow-hidden p-5 sm:p-8" style={{ border: "1px solid var(--hairline)" }}>
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
+              {[
+                { label: "Booked", value: "₹4,80,000", tone: "var(--text)" },
+                { label: "Received", value: "₹3,15,000", tone: "var(--green)" },
+                { label: "Outstanding", value: "₹1,65,000", tone: "var(--amber)" },
+              ].map((s) => (
+                <div key={s.label} className="rounded-2xl p-3 sm:p-5" style={{ background: "var(--surface)" }}>
+                  <div className="text-[11px] text-secondary sm:text-[13px]">{s.label}</div>
+                  <div className="display tabular mt-1 truncate text-[15px] font-semibold sm:text-[26px]" style={{ color: s.tone }}>
+                    {s.value}
+                  </div>
                 </div>
-              </motion.div>
+              ))}
+            </div>
+            <ul className="mt-4 divide-y rounded-2xl" style={{ background: "var(--surface)", borderColor: "var(--hairline)" }}>
+              {preview.map((r) => (
+                <li key={r.title} className="px-4 py-3.5 sm:px-5" style={{ borderColor: "var(--hairline)" }}>
+                  <div className="flex items-baseline justify-between gap-3 text-sm sm:text-[15px]">
+                    <span className="truncate font-medium">{r.title}</span>
+                    <span className="tabular shrink-0 font-semibold" style={{ color: "var(--amber)" }}>
+                      {r.due}
+                    </span>
+                  </div>
+                  <div className="mt-2.5 h-1 overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.1)" }}>
+                    <div className="h-full rounded-full" style={{ width: `${r.pct}%`, background: "var(--green)" }} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section id="features" className="mx-auto max-w-[1080px] scroll-mt-16 px-5 py-24">
+          <h2 className="mx-auto max-w-2xl text-center text-[32px] font-semibold leading-tight sm:text-[48px]">
+            Built for how freelancing actually works.
+          </h2>
+          <div className="mt-12 grid gap-3 sm:grid-cols-2 sm:gap-4">
+            {features.map((f) => (
+              <div key={f.title} className="card p-7 sm:p-9">
+                <f.icon size={28} strokeWidth={1.8} className="text-secondary" />
+                <h3 className="mt-5 text-[21px] font-semibold sm:text-[24px]">{f.title}</h3>
+                <p className="mt-2 text-[15px] text-secondary sm:text-[17px]">{f.desc}</p>
+              </div>
             ))}
           </div>
-          <div className="space-y-2 px-6 pb-6">
-            {["Landing page for Acme", "Mobile app UI kit", "Brand identity — Nova"].map(
-              (t, i) => (
-                <motion.div
-                  key={t}
-                  initial={{ opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1 + i * 0.12 }}
-                  className="flex items-center justify-between rounded-xl border px-4 py-3"
-                  style={{ borderColor: "var(--border)", background: "var(--card-solid)" }}
-                >
-                  <span className="text-sm font-medium">{t}</span>
-                  <span
-                    className="rounded-full px-2.5 py-1 text-xs font-medium"
-                    style={{
-                      background: "rgba(10,132,255,0.12)",
-                      color: "var(--accent)",
-                    }}
-                  >
-                    In Progress
-                  </span>
-                </motion.div>
-              )
-            )}
-          </div>
-        </motion.div>
-      </section>
+        </section>
+      </main>
 
-      {/* features */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-60px" }}
-              custom={i}
-              className="card p-6"
-            >
-              <div
-                className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl"
-                style={{ background: "rgba(10,132,255,0.12)", color: "var(--accent)" }}
-              >
-                <f.icon size={20} />
-              </div>
-              <h3 className="mb-1.5 font-semibold">{f.title}</h3>
-              <p className="text-sm text-secondary">{f.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      <footer className="border-t py-8 text-center text-sm text-tertiary" style={{ borderColor: "var(--border)" }}>
-        Built for freelancers who&apos;d rather be creating than reconciling.
+      <footer className="border-t py-8 text-center text-xs text-tertiary" style={{ borderColor: "var(--hairline)" }}>
+        Projects Manager · Your data stays private.
       </footer>
     </div>
   );

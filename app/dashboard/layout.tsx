@@ -1,10 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import {
-  DesktopSidebar,
-  MobileTopBar,
-  MobileBottomNav,
-} from "@/components/Sidebar";
+import { TopNav, TabBar } from "@/components/Nav";
+import { Toaster } from "@/components/Toaster";
 
 export default async function DashboardLayout({
   children,
@@ -12,23 +9,19 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) redirect("/login");
+  // Verified locally against the project's signing keys — no Auth-server round-trip.
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  if (!claims?.sub) redirect("/login");
 
   return (
-    <div className="flex min-h-screen">
-      <DesktopSidebar email={user.email ?? ""} />
-      {/* min-w-0 lets this column shrink instead of forcing horizontal scroll */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar />
-        <main className="flex-1 px-4 py-6 pb-28 sm:px-6 md:px-8 md:py-10 md:pb-10">
-          {children}
-        </main>
-      </div>
-      <MobileBottomNav />
+    <div className="min-h-screen">
+      <TopNav email={(claims.email as string) ?? ""} />
+      <main className="mx-auto w-full max-w-[1080px] px-4 pb-28 pt-6 sm:px-6 sm:pt-10 md:pb-20">
+        {children}
+      </main>
+      <TabBar />
+      <Toaster />
     </div>
   );
 }

@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { ProjectEditor } from "@/components/ProjectEditor";
 import { StatusBadge, ProgressBar } from "@/components/StatusBadge";
+import { PageHeader } from "@/components/PageHeader";
 import { formatMoney, relativeDeadline } from "@/lib/format";
 import {
   STATUS_ORDER,
@@ -14,6 +14,13 @@ import {
   type ProjectStatus,
   type ProjectWithStats,
 } from "@/lib/types";
+
+const DEADLINE_TONE = {
+  over: "var(--red)",
+  soon: "var(--amber)",
+  ok: "var(--text-3)",
+  none: "var(--text-3)",
+} as const;
 
 export function ProjectsBoard({
   projects,
@@ -27,7 +34,6 @@ export function ProjectsBoard({
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: projects.length };
-    for (const s of STATUS_ORDER) c[s] = 0;
     for (const p of projects) c[p.status] = (c[p.status] ?? 0) + 1;
     return c;
   }, [projects]);
@@ -37,49 +43,50 @@ export function ProjectsBoard({
     return projects.filter((p) => {
       if (status !== "all" && p.status !== status) return false;
       if (!q) return true;
-      return (
-        p.title.toLowerCase().includes(q) ||
-        (p.client_name ?? "").toLowerCase().includes(q) ||
-        (p.manager?.name ?? "").toLowerCase().includes(q)
+      return [p.title, p.client_name ?? "", p.manager?.name ?? ""].some((s) =>
+        s.toLowerCase().includes(q)
       );
     });
   }, [projects, query, status]);
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Projects</h1>
-          <p className="mt-1 text-secondary">{projects.length} in total</p>
-        </div>
-        <ProjectEditor
-          managers={managers}
-          trigger={{ label: "New project", icon: "plus", variant: "primary" }}
-        />
-      </div>
+    <div>
+      <PageHeader title="Projects" subtitle={`${projects.length} in total`}>
+        <ProjectEditor managers={managers} trigger={{ label: "New project", icon: "plus", variant: "primary" }} />
+      </PageHeader>
 
-      {/* controls */}
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="relative sm:w-72">
-          <Search
-            size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary"
-          />
+      <div className="fade-in fade-in-d1 mb-6 space-y-3">
+        <div className="relative sm:max-w-sm">
+          <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search title, client or source…"
-            className="input w-full py-2.5 pl-10 pr-4 text-sm"
+            placeholder="Search title, client or source"
+            className="input pl-10 pr-10"
+            type="search"
+            enterKeyHint="search"
           />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="icon-btn absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2"
+              aria-label="Clear search"
+            >
+              <X size={15} />
+            </button>
+          )}
         </div>
-        <div className="flex flex-wrap gap-2">
+
+        {/* horizontally scrollable on phones instead of wrapping into a wall of chips */}
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
           <Chip active={status === "all"} onClick={() => setStatus("all")}>
-            All <span className="opacity-60">{counts.all}</span>
+            All <span className="tabular opacity-60">{counts.all}</span>
           </Chip>
           {STATUS_ORDER.map((s) =>
             counts[s] ? (
               <Chip key={s} active={status === s} onClick={() => setStatus(s)}>
-                {STATUS_META[s].label} <span className="opacity-60">{counts[s]}</span>
+                {STATUS_META[s].label} <span className="tabular opacity-60">{counts[s]}</span>
               </Chip>
             ) : null
           )}
@@ -87,91 +94,65 @@ export function ProjectsBoard({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed py-20 text-center" style={{ borderColor: "var(--border-strong)" }}>
-          <p className="text-secondary">No projects match.</p>
+        <div className="card px-6 py-16 text-center text-secondary">
+          {projects.length === 0 ? "No projects yet. Create your first one." : "No projects match."}
         </div>
       ) : (
-        <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((p) => {
-              const pct = p.booked_amount > 0 ? (p.paid / p.booked_amount) * 100 : 0;
-              const dl = relativeDeadline(p.deadline);
-              return (
-                <motion.div
-                  key={p.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                  className="card group relative flex flex-col p-5"
-                >
-                  <div className="mb-3 flex items-start justify-between gap-2">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          {filtered.map((p) => {
+            const pct = p.booked_amount > 0 ? (p.paid / p.booked_amount) * 100 : 0;
+            const dl = relativeDeadline(p.deadline);
+            return (
+              <div key={p.id} className="card relative flex flex-col transition-colors hover:bg-[var(--card-hover)]">
+                <Link href={`/dashboard/projects/${p.id}`} className="pressable flex flex-1 flex-col p-5">
+                  <div className="mb-3 pr-9">
                     <StatusBadge status={p.status} />
-                    <ProjectEditor
-                      managers={managers}
-                      project={p}
-                      trigger={{
-                        icon: "pencil",
-                        ariaLabel: "Edit",
-                        className:
-                          "pressable rounded-full p-2 text-tertiary hover:bg-[var(--border)] hover:text-[var(--text)] md:opacity-0 md:transition md:group-hover:opacity-100",
-                      }}
-                    />
+                  </div>
+                  <h3 className="text-[17px] font-semibold leading-snug">{p.title}</h3>
+                  <div className="mt-1 truncate text-[13px] text-secondary">
+                    {p.manager ? `via ${p.manager.name}` : "No source"}
+                    {p.client_name ? ` · ${p.client_name}` : ""}
                   </div>
 
-                  <Link href={`/dashboard/projects/${p.id}`} className="flex flex-1 flex-col">
-                    <h3 className="text-[15px] font-semibold leading-snug">{p.title}</h3>
-                    <div className="mt-1 text-xs text-secondary">
-                      {p.manager ? `via ${p.manager.name}` : "No source"}
-                      {p.client_name ? ` · ${p.client_name}` : ""}
-                    </div>
-
-                    <div className="mt-4 flex items-end justify-between">
+                  <div className="mt-auto pt-5">
+                    <div className="flex items-end justify-between gap-3">
                       <div>
                         <div className="text-xs text-tertiary">Received</div>
-                        <div className="font-semibold" style={{ color: "var(--green)" }}>
+                        <div className="tabular font-semibold" style={{ color: "var(--green)" }}>
                           {formatMoney(p.paid, p.currency)}
                         </div>
                       </div>
                       <div className="text-right">
                         <div className="text-xs text-tertiary">Balance</div>
                         <div
-                          className="font-semibold"
-                          style={{ color: p.balance > 0 ? "var(--amber)" : "var(--text-secondary)" }}
+                          className="tabular font-semibold"
+                          style={{ color: p.balance > 0 ? "var(--amber)" : "var(--text-2)" }}
                         >
                           {formatMoney(p.balance, p.currency)}
                         </div>
                       </div>
                     </div>
-
-                    <div className="mt-3">
-                      <ProgressBar value={pct} />
-                      <div className="mt-2 flex items-center justify-between text-xs">
-                        <span className="text-tertiary">
-                          {Math.round(pct)}% of {formatMoney(p.booked_amount, p.currency)}
-                        </span>
-                        <span
-                          style={{
-                            color:
-                              dl.tone === "over"
-                                ? "var(--red)"
-                                : dl.tone === "soon"
-                                ? "var(--amber)"
-                                : "var(--text-tertiary)",
-                          }}
-                        >
-                          {dl.text}
-                        </span>
-                      </div>
+                    <ProgressBar value={pct} className="mt-3" />
+                    <div className="mt-2 flex items-center justify-between gap-3 text-xs">
+                      <span className="tabular text-tertiary">
+                        {Math.round(pct)}% of {formatMoney(p.booked_amount, p.currency)}
+                      </span>
+                      <span style={{ color: DEADLINE_TONE[dl.tone] }}>{dl.text}</span>
                     </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </motion.div>
+                  </div>
+                </Link>
+
+                <div className="absolute right-3 top-3">
+                  <ProjectEditor
+                    managers={managers}
+                    project={p}
+                    trigger={{ icon: "pencil", variant: "icon", ariaLabel: `Edit ${p.title}` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );
@@ -188,12 +169,13 @@ function Chip({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="rounded-full border px-3.5 py-1.5 text-sm font-medium transition"
+      aria-pressed={active}
+      className="pressable shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors"
       style={{
-        borderColor: active ? "transparent" : "var(--border-strong)",
-        background: active ? "var(--accent)" : "transparent",
-        color: active ? "#fff" : "var(--text-secondary)",
+        background: active ? "var(--text)" : "rgba(255,255,255,0.08)",
+        color: active ? "#000" : "var(--text-2)",
       }}
     >
       {children}

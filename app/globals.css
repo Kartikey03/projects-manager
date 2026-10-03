@@ -1,56 +1,40 @@
 @import "tailwindcss";
 
+/* Apple.com dark palette — flat surfaces, hairlines, no gradients. */
 :root {
-  --bg: #f5f5f7;
-  --bg-elevated: #ffffff;
-  --card: rgba(255, 255, 255, 0.72);
-  --card-solid: #ffffff;
-  --border: rgba(0, 0, 0, 0.08);
-  --border-strong: rgba(0, 0, 0, 0.14);
-  --text: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-tertiary: #a1a1a6;
+  color-scheme: dark;
+
+  --bg: #000000;
+  --surface: #161617;
+  --card: #1d1d1f;
+  --card-hover: #242426;
+  --field: rgba(255, 255, 255, 0.06);
+  --hairline: rgba(255, 255, 255, 0.08);
+  --hairline-strong: rgba(255, 255, 255, 0.16);
+
+  --text: #f5f5f7;
+  --text-2: #86868b;
+  --text-3: #6e6e73;
+
   --accent: #0071e3;
   --accent-hover: #0077ed;
-  --green: #1a9e4b;
-  --red: #d70015;
-  --amber: #b25000;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
-  --glass: rgba(245, 245, 247, 0.72);
-}
+  --link: #2997ff;
+  --green: #30d158;
+  --amber: #ff9f0a;
+  --red: #ff453a;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #000000;
-    --bg-elevated: #1c1c1e;
-    --card: rgba(28, 28, 30, 0.72);
-    --card-solid: #1c1c1e;
-    --border: rgba(255, 255, 255, 0.1);
-    --border-strong: rgba(255, 255, 255, 0.18);
-    --text: #f5f5f7;
-    --text-secondary: #98989d;
-    --text-tertiary: #636366;
-    --accent: #0a84ff;
-    --accent-hover: #409cff;
-    --green: #30d158;
-    --red: #ff453a;
-    --amber: #ff9f0a;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-    --glass: rgba(20, 20, 22, 0.72);
-  }
+  /* aliases kept for older component code */
+  --bg-elevated: var(--card);
+  --card-solid: var(--card);
+  --border: var(--hairline);
+  --border-strong: var(--hairline-strong);
+  --text-secondary: var(--text-2);
+  --text-tertiary: var(--text-3);
+  --glass: rgba(22, 22, 23, 0.8);
 }
 
 @theme inline {
-  --color-bg: var(--bg);
-  --color-card: var(--card-solid);
-  --color-border: var(--border);
-  --color-text: var(--text);
-  --color-accent: var(--accent);
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
     "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -60,22 +44,34 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  background: var(--bg);
+  /* reserve scrollbar space so pages never shift sideways when content height changes */
+  scrollbar-gutter: stable;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
     "Helvetica Neue", Helvetica, Arial, sans-serif;
-  letter-spacing: -0.011em;
+  font-size: 15px;
+  line-height: 1.47;
+  letter-spacing: -0.012em;
   min-height: 100vh;
-  /* never let a stray wide child cause sideways scrolling on phones */
-  overflow-x: hidden;
+  /* clip (not hidden) so sticky headers keep working */
+  overflow-x: clip;
 }
 
-/* Every tappable thing: kill the grey mobile tap flash (we supply our own
-   feedback), remove the 300ms delay, and keep touch scrolling smooth. */
+h1,
+h2,
+h3,
+.display {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+    Helvetica, Arial, sans-serif;
+  letter-spacing: -0.022em;
+}
+
+@layer base {
 button,
 a,
 [role="button"],
@@ -90,8 +86,16 @@ a,
 [role="button"] {
   cursor: pointer;
 }
+}
 
-/* ===== Reusable primitives ===== */
+/* Component classes live in a layer so Tailwind utilities can override them. */
+@layer components {
+/* numbers that update should never change width */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== Surfaces ===== */
 .glass {
   background: var(--glass);
   backdrop-filter: saturate(180%) blur(20px);
@@ -99,87 +103,189 @@ a,
 }
 
 .card {
-  background: var(--card-solid);
-  border: 1px solid var(--border);
+  background: var(--card);
   border-radius: 18px;
-  box-shadow: var(--shadow-sm);
 }
 
+.hairline {
+  border-color: var(--hairline);
+}
+
+/* ===== Buttons (Apple pill) ===== */
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0 1.1rem;
+  border-radius: 980px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, opacity 0.15s ease, transform 0.1s ease;
+}
 .btn-primary {
   background: var(--accent);
   color: #fff;
-  border-radius: 980px;
-  font-weight: 500;
-  min-height: 44px;
-  transition: transform 0.12s ease, background 0.15s ease, box-shadow 0.15s ease,
-    filter 0.12s ease;
+}
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
 }
 @media (hover: hover) {
   .btn-primary:hover {
     background: var(--accent-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
+  }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.16);
   }
 }
-.btn-primary:active {
-  transform: scale(0.96);
-  filter: brightness(0.92);
+.btn-primary:active,
+.btn-secondary:active {
+  transform: scale(0.97);
+  opacity: 0.85;
 }
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
 }
-
-.btn-ghost {
-  border: 1px solid var(--border-strong);
-  border-radius: 980px;
-  color: var(--text);
-  min-height: 44px;
-  transition: background 0.15s ease, transform 0.12s ease;
+.link {
+  color: var(--link);
 }
 @media (hover: hover) {
-  .btn-ghost:hover {
-    background: var(--border);
-    transform: translateY(-1px);
+  .link:hover {
+    text-decoration: underline;
   }
 }
-.btn-ghost:active {
-  transform: scale(0.96);
-  background: var(--border-strong);
-}
 
-/* Press feedback for any tappable surface (cards, list rows, icon buttons) */
+/* press feedback for rows, tiles and icon buttons — colour only, no movement */
 .pressable {
-  transition: transform 0.12s ease, background 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
 }
 .pressable:active {
-  transform: scale(0.98);
+  opacity: 0.6;
 }
 
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  color: var(--text-2);
+  transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+@media (hover: hover) {
+  .icon-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+  }
+}
+.icon-btn:active {
+  opacity: 0.6;
+}
+
+/* ===== Form fields ===== */
 .input {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
+  width: 100%;
+  min-height: 44px;
+  padding: 0 0.9rem;
+  background: var(--field);
+  border: 1px solid var(--hairline-strong);
   border-radius: 12px;
   color: var(--text);
+  font-size: 15px;
   outline: none;
-  transition: border 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+textarea.input {
+  padding: 0.7rem 0.9rem;
+  min-height: 88px;
+  resize: vertical;
+}
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+}
+.input::placeholder {
+  color: var(--text-3);
 }
 .input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.35);
 }
-/* 16px prevents iOS Safari from zooming the page when a field is focused */
+/* 16px stops iOS Safari zooming the page when a field is focused */
 @media (max-width: 640px) {
   .input {
-    font-size: 16px !important;
+    font-size: 16px;
   }
 }
 
+.field-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
 .text-secondary {
-  color: var(--text-secondary);
+  color: var(--text-2);
 }
 .text-tertiary {
-  color: var(--text-tertiary);
+  color: var(--text-3);
+}
+}
+
+/* ===== Motion — subtle, opacity-led, and off for reduced-motion users ===== */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@layer components {
+.fade-in {
+  animation: fade-in 0.45s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+.fade-in-d1 {
+  animation-delay: 0.06s;
+}
+.fade-in-d2 {
+  animation-delay: 0.12s;
+}
+.fade-in-d3 {
+  animation-delay: 0.18s;
+}
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -187,27 +293,11 @@ a,
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: rgba(255, 255, 255, 0.16);
   border-radius: 8px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
-}
-
-@keyframes float-slow {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(20px, -30px) scale(1.08); }
-}
-@keyframes float-slow-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-30px, 20px) scale(1.12); }
-}
-.blob-1 { animation: float-slow 18s ease-in-out infinite; }
-.blob-2 { animation: float-slow-2 22s ease-in-out infinite; }
-
-@keyframes shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
 }
